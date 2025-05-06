@@ -1,23 +1,17 @@
-import { View, Text } from 'react-native'
-import React, { useEffect } from 'react'
-import { fetchCategories } from './src/api/api'
+import React from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import StackNavigator from './src/navigator/StackNavigator';
+import { FavoritesProvider } from './src/stores/FavoritesContext';
+
 
 const App = () => {
-  useEffect(() => {
-    const getCategories = async () => {
-      const categories = await fetchCategories();
-      console.log(JSON.stringify(categories, null, 2));
-    };
-
-    getCategories();
-
-  }, [])
-
   return (
-    <View>
-      <Text>Recipe App</Text>
-    </View>
+    <FavoritesProvider>
+      <NavigationContainer>
+        <StackNavigator />
+      </NavigationContainer>
+    </FavoritesProvider>
   )
 }
 
-export default App
+export default App;
