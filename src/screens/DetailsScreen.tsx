@@ -13,10 +13,8 @@ type MealDetail = {
     strCategory: string;
     strArea: string;
     strInstructions: string;
+    [key: string]: any;
 };
-
-
-
 
 
 const DetailsScreen = () => {
@@ -51,12 +49,32 @@ const DetailsScreen = () => {
         );
     }
 
+    const renderIngredients = () => {
+        const ingredients = [];
+        for (let i = 1; i <= 20; i++) {
+            const ingredient = meal[`strIngredient${i}`];
+            const measure = meal[`strMeasure${i}`];
+            if (ingredient && ingredient.trim() !== '') {
+                ingredients.push(
+                    <Text key={i} style={styles.ingredient}>
+                        • {ingredient} - {measure}
+                    </Text>
+                );
+            }
+        }
+        return ingredients;
+    };
+
     return (
         <ScrollView contentContainerStyle={styles.container}>
             <Image source={{ uri: meal.strMealThumb }} style={styles.image} />
             <Text style={styles.title}>{meal.strMeal}</Text>
-            <Text style={styles.subInfo}>Category: {meal.strCategory}</Text>
-            <Text style={styles.subInfo}>Area: {meal.strArea}</Text>
+            <Text style={styles.subInfo}>
+                {meal.strCategory} • {meal.strArea}
+            </Text>
+            <Text style={styles.sectionTitle}>Ingredients</Text>
+            {renderIngredients()}
+
             <Text style={styles.sectionTitle}>Instructions</Text>
             <Text style={styles.instructions}>{meal.strInstructions}</Text>
         </ScrollView>
@@ -96,6 +114,10 @@ const styles = StyleSheet.create({
         fontWeight: '600',
         marginTop: 16,
         marginBottom: 8,
+    },
+    ingredient: {
+        fontSize: 16,
+        marginBottom: 4,
     },
     instructions: {
         fontSize: 16,
