@@ -1,8 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, Image, ScrollView, StyleSheet, ActivityIndicator } from 'react-native';
+import { View, Text, Image, ScrollView, StyleSheet, ActivityIndicator, TouchableOpacity } from 'react-native';
 import { useRoute, RouteProp } from '@react-navigation/native';
 import { fetchDetailsById } from '../api/api';
 import { RootStackParamList } from '../navigator/StackNavigator';
+
+import { Ionicons } from '@expo/vector-icons';
+import { useFavorites } from '../stores/FavoritesContext';
 
 type DetailsScreenRouteProp = RouteProp<RootStackParamList, 'Details'>;
 
@@ -11,7 +14,7 @@ type MealDetail = {
     strMeal: string;
     strMealThumb: string;
     strCategory: string;
-    strArea: string;
+    strArea?: string;
     strInstructions: string;
     [key: string]: any;
 };
@@ -23,6 +26,23 @@ const DetailsScreen = () => {
 
     const [meal, setMeal] = useState<MealDetail | null>(null);
     const [loading, setLoading] = useState(true);
+
+    const { favorites, addFavorite, removeFavorite } = useFavorites();
+
+
+    const toggleFavorite = () => {
+        if (!meal) return;
+        if (isFavorite) {
+            removeFavorite(meal.idMeal);
+        } else {
+            addFavorite({
+                idMeal: meal.idMeal,
+                strMeal: meal.strMeal,
+                strMealThumb: meal.strMealThumb,
+                strArea: meal.strArea,
+            });
+        }
+    };
 
     useEffect(() => {
         const loadMeal = async () => {
@@ -49,6 +69,9 @@ const DetailsScreen = () => {
         );
     }
 
+    const isFavorite = favorites.some((fav) => fav.idMeal === meal.idMeal);
+
+
     const renderIngredients = () => {
         const ingredients = [];
         for (let i = 1; i <= 20; i++) {
@@ -68,6 +91,15 @@ const DetailsScreen = () => {
     return (
         <ScrollView contentContainerStyle={styles.container}>
             <Image source={{ uri: meal.strMealThumb }} style={styles.image} />
+            <View style={{ alignItems: 'flex-end', marginBottom: 16 }}>
+                <TouchableOpacity onPress={toggleFavorite}>
+                    <Ionicons
+                        name={isFavorite ? 'heart' : 'heart-outline'}
+                        size={30}
+                        color="#e60026"
+                    />
+                </TouchableOpacity>
+            </View>
             <Text style={styles.title}>{meal.strMeal}</Text>
             <Text style={styles.subInfo}>
                 {meal.strCategory} • {meal.strArea}
