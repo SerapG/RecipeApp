@@ -35,13 +35,23 @@ export const fetchDetailsById = async (id: string) => {
     }
 };
 
-//Yemegi isme göre ara(searc ekrani icin)
+//Yemegi isme göre ara
 export const fetchMealByName = async (name: string) => {
     try {
         const response = await axios.get(`${API_URL}/search.php?s=${name}`);
         return response.data.meals || []; //eger yemek bulamazsa null doner
     } catch (error) {
         console.error(`${name} icin arama basarisiz`, error);
+        return [];
+    }
+};
+
+export const searchMealsByName = async (name: string) => {
+    try {
+        const response = await axios.get(`${API_URL}/search.php?s=${name}`);
+        return response.data.meals || []; // null gelirse bos array doner
+    } catch (error) {
+        console.error("Yemek araması başarısız:", error);
         return [];
     }
 };

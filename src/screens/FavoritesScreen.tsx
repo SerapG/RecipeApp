@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, FlatList, Image, TouchableOpacity } from 'react-native'
+import { StyleSheet, Text, View, FlatList, Image, TouchableOpacity, SafeAreaView, Platform } from 'react-native'
 import React from 'react';
 import { useFavorites } from '../stores/FavoritesContext';
 import { Ionicons } from '@expo/vector-icons';
@@ -40,7 +40,7 @@ const FavoriteScreen = () => {
         )
     }
     return (
-        <View style={styles.container}>
+        <SafeAreaView style={styles.container}>
             {favorites.length === 0 ? (
                 <Text style={styles.emptyText}>Henüz favori yemeğin yok 💔</Text>
             ) : (
@@ -51,7 +51,7 @@ const FavoriteScreen = () => {
                     contentContainerStyle={{ paddingBottom: 20 }}
                 />
             )}
-        </View>
+        </SafeAreaView>
     )
 }
 
@@ -63,6 +63,7 @@ const styles = StyleSheet.create({
         flex: 1,
         padding: 12,
         backgroundColor: '#fff',
+        paddingTop: Platform.OS === 'android' ? 30 : 0,
     },
     emptyText: {
         marginTop: 40,
