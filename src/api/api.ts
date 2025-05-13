@@ -55,6 +55,34 @@ export const searchMealsByName = async (name: string) => {
         return [];
     }
 };
+export const fetchMealsByCountry = async (country: string) => {
+    try {
+        const response = await axios.get(`${API_URL}/filter.php?a=${country}`);
+        return response.data.meals || [];
+    } catch (error) {
+        console.error("Ülkeye göre yemek getirme hatası:", error);
+        return [];
+    }
+};
 
 
+export const fetchAreas = async () => {
+    try {
+        const response = await axios.get(`${API_URL}/list.php?a=list`);
+        return response.data.meals || [];
+    } catch (error) {
+        console.error("Ülkeler çekilemedi:", error);
+        return [];
+    }
+};
+
+export const fetchMealsByFirstLetter = async (letter: string) => {
+    try {
+        const response = await axios.get(`${API_URL}/search.php?f=${letter}`);
+        return response.data.meals || [];
+    } catch (error) {
+        console.error("Harf ile yemek getirme hatası:", error);
+        return [];
+    }
+};
 export default API_URL;
