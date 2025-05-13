@@ -1,4 +1,7 @@
-import { createContext, useContext, useState, ReactNode } from "react";
+import { createContext, useContext, useState, ReactNode, useEffect } from "react";
+
+import { db } from '../firebase/firebaseConfig';
+import { doc, setDoc, getDoc, collection } from 'firebase/firestore';
 
 export type Meal = {
     idMeal: string;
@@ -21,18 +24,45 @@ export const FavoritesProvider = ({ children }: { children: ReactNode }) => {
 
     const [favorites, setFavorites] = useState<Meal[]>([]);
 
-    const addFavorite = (meal: Meal) => {
-        setFavorites((prev) => {
-            const exists = prev.find((m) => m.idMeal === meal.idMeal);
-            if (exists) return prev;
-            return [...prev, meal];
-        })
+    const saveFavoritesToFireStore = async (favorites: Meal[]) => {
+        try {
+            await setDoc(doc(db, "favorites", "user1"), { favorites });
+            console.log("Firestore'a başarıyla kaydedildi!");
+        } catch (error) {
+            console.error("Firestore'a yazılamadı:", error);
+        }
     };
 
-    const removeFavorite = (id: string) => {
-        setFavorites((prev) => prev.filter((meal) => meal.idMeal !== id));
+    const loadFavoritesFromFirestore = async (): Promise<Meal[]> => {
+        const docSnap = await getDoc(doc(db, "favorites", "user1"));
+        if (docSnap.exists()) {
+            return docSnap.data().favorites || [];
+        }
+        return [];
+    };
+
+    const addFavorite = async (meal: Meal) => {
+        if (favorites.some(f => f.idMeal === meal.idMeal)) return;
+        const updatedFavorites = [...favorites, meal];
+        setFavorites(updatedFavorites);
+        console.log("Favori güncellendi, Firestore'a gönderiliyor:", updatedFavorites);
+        await saveFavoritesToFireStore(updatedFavorites);
+    };
+
+    const removeFavorite = async (id: string) => {
+        const updated = favorites.filter((meal) => meal.idMeal !== id);
+        setFavorites(updated);
+        await saveFavoritesToFireStore(updated);
 
     };
+
+    useEffect(() => {
+        const loadData = async () => {
+            const data = await loadFavoritesFromFirestore();
+            setFavorites(data);
+        };
+        loadData();
+    }, []);
 
     return (
         <FavoritesContext.Provider
