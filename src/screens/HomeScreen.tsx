@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, Image, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, FlatList, Image, TouchableOpacity, StyleSheet, SafeAreaView, Platform, StatusBar } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { fetchCategories } from '../api/api';
 
@@ -41,7 +41,8 @@ const HomeScreen = () => {
 
 
     return (
-        <View style={styles.container}>
+        <SafeAreaView style={styles.container}>
+            <StatusBar barStyle="dark-content" backgroundColor="#fff" />
             <Text style={styles.header}>Meal Categories</Text>
             <FlatList
                 data={categories}
@@ -49,7 +50,7 @@ const HomeScreen = () => {
                 keyExtractor={(item) => item.idCategory}
                 numColumns={2}
             />
-        </View>
+        </SafeAreaView>
     )
 };
 
@@ -59,7 +60,8 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         paddingHorizontal: 12,
-        paddingTop: 20,
+        paddingTop: Platform.OS === 'android' ? 30 : 0,
+        backgroundColor: '#fff',
     },
     header: {
         fontSize: 22,
