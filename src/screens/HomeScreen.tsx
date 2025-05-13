@@ -44,6 +44,19 @@ const HomeScreen = () => {
         <SafeAreaView style={styles.container}>
             <StatusBar barStyle="dark-content" backgroundColor="#fff" />
             <Text style={styles.header}>Meal Categories</Text>
+            <TouchableOpacity
+                style={styles.navButton}
+                onPress={() => navigation.navigate('AlphabeticList')}
+            >
+                <Text style={styles.buttonText}>Alfabetik Liste</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+                onPress={() => navigation.navigate('AreaList')}
+                style={styles.navButton}
+            >
+                <Text style={styles.buttonText}>Ülkelere Göre</Text>
+            </TouchableOpacity>
             <FlatList
                 data={categories}
                 renderItem={renderCategory}
@@ -90,5 +103,16 @@ const styles = StyleSheet.create({
     title: {
         fontSize: 16,
         fontWeight: '600',
+    },
+    navButton: {
+        backgroundColor: '#007AFF',
+        padding: 14,
+        marginVertical: 10,
+        borderRadius: 8,
+    },
+    buttonText: {
+        color: '#fff',
+        textAlign: 'center',
+        fontWeight: 'bold',
     },
 });
